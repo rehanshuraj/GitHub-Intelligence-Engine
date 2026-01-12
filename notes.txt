@@ -1,0 +1,37 @@
+TASK 1: file and folders structure :-
+        backend/
+        │
+        ├── controllers/
+        │   └── analyze.controller.js
+        │
+        ├── graphql/
+        │   └── queries.js
+        │
+        ├── routes/
+        │   └── auth.js
+        │
+        ├── services/
+        │   ├── github.service.js
+        │   ├── commit.service.js
+        │   ├── commitScore.js
+        │
+        ├── utils/
+        │   └── commitClassifier.js
+        │
+        ├── repoFilter.js
+        │
+        ├── .env
+        ├── server.js
+        └── package.json
+
+
+        step1: setup server.js
+        step2: make routes folder and add routings in auth.js
+        step3: graphql/queries.js
+        step4: services/  - github.service.js
+                        - repoFilter.js
+                        - commit.service.js
+        step5:  utils/commitClassifier.js
+        step6:  services/commitScore.js
+        step7:  controllers/analyze.controller.js
+
