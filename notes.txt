@@ -75,6 +75,7 @@ explaination for task1:
         ↓
         Frontend uses JWT to request analysis
 
+###
 STATIC CODE COMPLEXITY USING AST(Abstract Syntax Tree)
 We will compute REAL engineering signals:
 
@@ -90,11 +91,30 @@ Dependencies :-npm install @babel/parser @babel/traverse fs path
 
 files and folders structure 
     services/
-    └── codeAnalysis.service.js
+    └── codeAnalysis.service.js FILE → TEXT → AST → FUNCTION NODES → METRICS
+
 
     utils/
     └── complexityCalculator.js
+    This file teaches the computer:
+    how many decisions exist
+    how deep logic is buried
+    how large a function is
+    whether it’s becoming dangerous
 
+###
+Risky Coding Pattern Detector
+  Because:
+   - Bugs hide in them
+    -Security breaches start here
+   - Maintenance becomes hell
+   - Juniors write them unconsciously
+   - Seniors actively avoid the
+   - This is engineering maturity, not syntax.
 
+utils/
+ └── riskDetector.js
 
-
+This file:
+    looks at ONE function
+    reports risky patterns
