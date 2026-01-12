@@ -118,3 +118,56 @@ utils/
 This file:
     looks at ONE function
     reports risky patterns
+
+###
+FULL-EMS (Engineering Maturity Score)
+GitHub shows:
+
+stars ⭐
+followers 👥
+commits 📈
+
+But companies want:
+Can this person write maintainable code?
+Do they refactor or just pile up logic?
+Do they write safe, disciplined code?
+Are they consistent over time?
+
+So we create EMS = Engineering Maturity Score (0–100)
+EMS answers:
+“How mature is this engineer’s thinking in code?”
+What inputs does EMS need?
+    -Commit Quality Score (0–20)
+    - Code Complexity Metrics
+        cyclomatic complexity
+        nesting depth
+        god functions
+    -Risky Coding Patterns
+        secrets
+        empty catch
+        globals
+    -Consistency
+        steady commits
+        no massive spikes
+    -Refactor Signals
+        refactor commits exist
+    EMS is just combining intelligence, not magic.
+
+EMS Philosophy (VERY IMPORTANT)
+    We do NOT reward:
+    ❌ more commits
+    ❌ more repos
+    ❌ more LOC
+    We reward:
+    ✅ discipline
+    ✅ simplicity
+    ✅ improvement over time
+    ✅ safety
+    That’s why weights matter.
+services/
+ └── emsScore.service.js
+This file:
+    takes all metrics
+    normalizes them
+    outputs ONE score
+    
