@@ -39,7 +39,7 @@ router.get("/github/callback",async(req,res)=>{
         },
         {headers:{Accept:"application/json"}}
     );
-    // GitHub personal access token
+    // GitHub personal access token , Ask GitHub for permission on behalf of the user and get an access token
     const accessToken = tokenResponse.data.access_token;
 
      /**

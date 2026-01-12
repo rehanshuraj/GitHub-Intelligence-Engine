@@ -35,3 +35,66 @@ TASK 1: file and folders structure :-
         step6:  services/commitScore.js
         step7:  controllers/analyze.controller.js
 
+explaination for task1:
+    -routes/auth.js
+       This file handles:
+        Logging in with GitHub
+        Getting permission
+        Returning a safe token to frontend
+
+
+        1.OAuth
+        OAuth is like this:
+
+            “Hey GitHub, can you allow my app to read this user’s repos?”
+            GitHub: “Only if the user agrees.”
+            User: “I agree.”
+            GitHub: “Okay, here’s a key (token). Use it carefully.”
+
+            That key = access token
+
+         FLOW:
+           - User logs in
+           - GitHub approves
+          -  Backend creates JWT
+           - User is sent to frontend with token
+           - Frontend stores JWT
+           - Frontend sends JWT in API requests
+
+        User clicks login
+        ↓
+        Backend redirects to GitHub
+        ↓
+        GitHub authenticates user
+        ↓
+        GitHub sends code
+        ↓
+        Backend exchanges code for token
+        ↓
+        Backend wraps token in JWT
+        ↓
+        Frontend uses JWT to request analysis
+
+STATIC CODE COMPLEXITY USING AST(Abstract Syntax Tree)
+We will compute REAL engineering signals:
+
+1️⃣ Function length
+2️⃣ Cyclomatic complexity
+3️⃣ Nesting depth
+4️⃣ God functions
+5️⃣ Maintainability signals
+
+Dependencies :-npm install @babel/parser @babel/traverse fs path
+@babel/parser → converts JS → AST
+@babel/traverse → walks through AST
+
+files and folders structure 
+    services/
+    └── codeAnalysis.service.js
+
+    utils/
+    └── complexityCalculator.js
+
+
+
+
