@@ -170,4 +170,21 @@ This file:
     takes all metrics
     normalizes them
     outputs ONE score
-    
+
+Bad engineers:  update
+                final
+                fix
+Good engineers: refactor: simplify auth logic
+                test: add edge case for null user
+
+
+##FLOW OF THE BACKENED
+server.js
+   ↓
+route (/analyze)
+   ↓
+controller
+   ↓
+services
+   ↓
+utils
