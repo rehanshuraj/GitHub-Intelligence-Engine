@@ -188,3 +188,34 @@ controller
 services
    ↓
 utils
+
+🧩 CONTROLLER FLOW 
+When someone hits:  GET /analyze/:username
+
+The controller does this:
+   - Get GitHub token from JWT
+    -Fetch repositories
+    -Analyze commits
+   - Analyze code complexity
+   -Detect risks
+   -Calculate EMS
+   - Send JSON response
+
+
+NOW NEXT:-
+
+Code analysis (analyzeFile)
+Risk detection (detectRisks)
+
+require downloading repo files.
+That is the NEXT step.
+functionNode comes from parsing real .js files
+GitHub ZIP download - best for backened faster and secure 
+GitHub Repo
+ → Download files
+ → Read .js files
+ → Parse AST
+ → Complexity + Risk
+ → EMS
+ Dependencies : npm install unzipper
+    
