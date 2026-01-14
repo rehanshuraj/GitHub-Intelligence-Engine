@@ -1,0 +1,6 @@
+packages
+-prismjs(import in frontend -app.js)
+-npm i react-simple-code-editor
+-npm i axios (frontend)
+-npm i cors (frontend)
+-npm i react-markdown (frontend) -for codereiew in best format 

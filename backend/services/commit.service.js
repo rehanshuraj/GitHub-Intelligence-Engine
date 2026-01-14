@@ -1,6 +1,7 @@
 /**
  * Fetch commit history for a repository
  */
+import axios from "axios";
 
 const GET_COMMITS = `
 query ($owner: String!, $repo: String!, $branch: String!) {

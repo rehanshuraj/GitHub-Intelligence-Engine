@@ -1,29 +1,33 @@
-/**
- * Entry point of backend server
- * - Loads environment variables
- * - Starts Express server
- * - Registers routes
- */
-
 import express from "express";
-import dotenv, { config } from "dotenv";
-import authRoutes from "./routes/auth.js"
+import dotenv from "dotenv";
+import cors from "cors";
 
+import authRoutes from "./routes/auth.js";
 import { analyzeUser } from "./controllers/analyze.controller.js";
 
 dotenv.config();
 
-const app=express();
+const app = express();
+
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true
+  })
+);
+
 app.use(express.json());
 
-// GitHub OAuth routes
+// OAuth routes
 app.use("/auth", authRoutes);
 
-// Analyze GitHub user engineering behavior
-app.get("/analyze/:username", analyzeUser);
+// Analysis route
+app.get("/analyze/:username", (req, res, next) => {
+  console.log("Analyze route hit for:", req.params.username);
+  next();
+}, analyzeUser);
 
-
-const PORT=3000;
-app.listen(PORT, ()=>{
-    console.log("hello rajveer your server is running")
-})
+const PORT = 4000;
+app.listen(PORT, () => {
+  console.log(`hello rajveer your server is running on port ${PORT}`);
+});

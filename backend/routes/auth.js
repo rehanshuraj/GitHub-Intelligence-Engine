@@ -18,7 +18,9 @@ const router = express.Router();
  * Redirect user to GitHub OAuth consent screen
  */
 router.get("/github",(req,res)=>{
-    const redirecturi = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&scope=repo`;
+    const redirecturi =  `https://github.com/login/oauth/authorize` +
+    `?client_id=${process.env.GITHUB_CLIENT_ID}` +
+    `&scope=repo`;
     res.redirect(redirecturi);
 });
 
@@ -53,7 +55,7 @@ router.get("/github/callback",async(req,res)=>{
     );
 
     // Redirect to frontend with JWT
-    res.redirect(`http://localhost:3000/dashboard?token=${jwtToken}`);
+    res.redirect(`http://localhost:5173/dashboard?token=${jwtToken}`);
 
 })
 

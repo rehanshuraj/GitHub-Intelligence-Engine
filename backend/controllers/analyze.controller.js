@@ -12,7 +12,7 @@
 import jwt from "jsonwebtoken";
 
 import { fetchRepos } from "../services/github.service.js";
-import { filterRepos } from "../repoFilter.js";
+import { filterRepos } from "../services/repoFilter.js";
 import { fetchCommits } from "../services/commit.service.js";
 import { calculateCommitScore } from "../services/commitScore.js";
 import { downloadRepo } from "../services/repoDownload.service.js";
@@ -23,17 +23,23 @@ import {
 
 export async function analyzeUser(req, res) {
   try {
-    // 1️ Username from URL
+    // 1️⃣ Username from URL
     const { username } = req.params;
 
-    // 2️ Extract GitHub access token from JWT
-    const jwtToken = req.headers.authorization;
+    // 2️⃣ Extract JWT safely
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+      return res.status(401).json({ error: "Missing auth token" });
+    }
+
+    // Remove "Bearer "
+    const token = authHeader.replace("Bearer ", "");
     const { accessToken } = jwt.verify(
-      jwtToken,
+      token,
       process.env.JWT_SECRET
     );
 
-    // 3️ Fetch & filter repositories
+    // 3️⃣ Fetch & filter repositories
     const repos = await fetchRepos(username, accessToken);
     const filteredRepos = filterRepos(repos);
 
@@ -42,25 +48,31 @@ export async function analyzeUser(req, res) {
     let allComplexityMetrics = [];
     let refactorCount = 0;
 
-    // 4️ Analyze each repository
+    // 4️⃣ Analyze each repository
     for (const repo of filteredRepos) {
+
+      const branch =
+        repo.defaultBranchRef?.name || "main";
+
       // ---- Commit analysis ----
       const commits = await fetchCommits(
         username,
         repo.name,
-        repo.defaultBranchRef.name,
+        branch,
         accessToken
       );
 
       allCommits.push(...commits);
 
-      // Count REAL refactors (message + actual change)
+      // Count REAL refactors
       refactorCount += commits.filter(c =>
-        c.messageHeadline.toLowerCase().includes("refactor") &&
+        c.messageHeadline
+          ?.toLowerCase()
+          .includes("refactor") &&
         (c.additions + c.deletions) > 20
       ).length;
 
-      // ---- Download repo for static analysis ----
+      // ---- Download repo ----
       const repoPath = await downloadRepo(
         username,
         repo.name,
@@ -77,10 +89,10 @@ export async function analyzeUser(req, res) {
       }
     }
 
-    // 5️ Final commit quality score (across ALL repos)
+    // 5️⃣ Final commit quality score
     const commitScore = calculateCommitScore(allCommits);
 
-    // 6️ Final response (EMS-ready)
+    // 6️⃣ EMS-ready response
     res.json({
       username,
       reposAnalyzed: filteredRepos.length,
@@ -92,8 +104,9 @@ export async function analyzeUser(req, res) {
     });
 
   } catch (err) {
+    console.error("Analyze error:", err);
     res.status(500).json({
-      error: err.message
+      error: "Failed to analyze user"
     });
   }
 }

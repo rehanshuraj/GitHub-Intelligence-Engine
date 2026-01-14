@@ -1,0 +1,12 @@
+1. so in frontend we have to create 4 routes for the users
+- /user/register => user register form
+- /user/login => user login form
+
+- /food-partner/register => food-partner register form 
+- /food-partner/login => food-partner login form
+
+2.use gpt for making ui
+3.use -npm i axios for api integration (linking frontend to api)
+4.To add new features
+-you have to  modify the schemas , and the jsx logic that is above the return function in a particular function
+-also modify the router/apis basically controller auth.controller

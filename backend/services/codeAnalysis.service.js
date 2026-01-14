@@ -1,56 +1,63 @@
-/**
- * This file:
- * - Reads JS files
- * - Converts code into AST
- * - Sends AST to complexity calculator
- */
-
 import fs from "fs";
-import path from "path";
+import path from "path";  
 import parser from "@babel/parser";
 import traverse from "@babel/traverse";
-import { calculateComplexity } from "../utils/complexityCalculator.js";
-
-/**
- * Analyze a single JavaScript file
- */
 
 export function analyzeFile(filePath) {
-    const code = fs.readFileSync(filePath,"utf-8");
+  try {
+    const code = fs.readFileSync(filePath, "utf-8");
 
-    // convert js code into AST
-    const ast = parser.parse(code,{
-        sourceType: "module",
-        plugins:["jsx"]
+    const ast = parser.parse(code, {
+      sourceType: "module",
+      plugins: ["jsx"],
+      errorRecovery: true
     });
-    
+
     const metrics = [];
 
-    //walk through AST nodes
-    traverse(ast, {
-        Function(path) {
-        const complexity = calculateComplexity(path.node);
-        metrics.push(complexity);
-        }
+    traverseAST(ast, {
+      Function(path) {
+        const body = path.node.body;
+
+        if (!body || !body.body) return;
+
+        const complexity = body.body.length;
+
+        metrics.push({
+          cyclomaticComplexity: complexity,
+          maxNestingDepth: path.getAncestry().length,
+          isGodFunction: complexity > 50
+        });
+      }
     });
+
     return metrics;
+
+  } catch (err) {
+    console.warn("Skipping file (parse error):", filePath);
+    return [];
+  }
 }
 
-/**
- * Recursively collect all .js files
- */
+export function getAllJSFiles(dir, files = []) {
+  const ignored = ["node_modules", ".git", "dist", "build"];
 
-export function getAllJSFiles(dir,files=[]){
-    const entries = fs.readdirSync(dir);
+  if (!fs.existsSync(dir)) return files;
 
-    for(const entry of entries){
-        const fullPath = path.join(dir,entry);
+  for (const file of fs.readdirSync(dir)) {
+    if (ignored.includes(file)) continue;
 
-        if(fs.statSync(fullPath).isDirectory()){
-            getAllJSFiles(fullPath,files);
-        }else if (fullPath.endsWith(".js")){
-            files.push(fullPath);
-        }
+    const fullPath = path.join(dir, file);
+
+    if (fs.statSync(fullPath).isDirectory()) {
+      getAllJSFiles(fullPath, files);
+    } else if (
+      file.endsWith(".js") ||
+      file.endsWith(".jsx")
+    ) {
+      files.push(fullPath);
     }
-    return files;
+  }
+
+  return files;
 }

@@ -6,7 +6,7 @@
  * - Non-JS/TS repos
  */
 
-export function filterRespos(repos){
+export function filterRepos(repos){
     const sixMonthsAgo = new Date();
     sixMonthsAgo.setMonth(sixMonthsAgo.getMonth()-6);
 

@@ -280,3 +280,169 @@ Why it happens
     Repo size ignored
     Time window ignored
 
+FRONTEND
+React Dashboard (EMS + Graphs)
+
+Frontend Structure (Simple)
+frontend/
+│
+├── package.json
+│
+├── src/
+│   ├── main.jsx
+│   ├── App.jsx
+│   │
+│   ├── api/
+│   │   └── githubApi.js
+│   │
+│   ├── pages/
+│   │   ├── Login.jsx
+│   │   └── Dashboard.jsx
+│   │
+│   ├── components/
+│   │   ├── EMSMeter.jsx
+│   │   ├── StatCard.jsx
+│   │   └── Loader.jsx
+│   │
+│   └── styles/
+│       └── global.css
+
+
+Login.jsx
+  → /auth/github (backend)
+  → GitHub OAuth
+  → redirect /dashboard?token=JWT
+
+Dashboard.jsx
+  → /analyze/:username
+  → backend analyzes
+  → EMS JSON returned
+  → UI renders insights
+
+
+MY APP OVERVIEW
+
+1️⃣ Commit Quality (Primary Focus)
+What it measures
+    Commit size
+    Commit frequency
+    Commit intent (via message analysis)
+    ComMit discipline
+
+Why it matters
+Good engineers:
+    Commit often but meaningfully
+    Avoid giant dump commits
+    Use commits as documentation
+
+How your app detects it
+    Analyzes all commits across all repos
+    Scores commits based on:
+        Lines added/deleted
+        Message patterns
+        Distribution over time
+
+📌 Output in UI
+Commit Quality Score (0–10)
+Total Commits
+
+2️⃣ Refactoring Behavior (Very Important Signal)
+What it measures
+    How often the developer improves existing code
+    Not just adding features, but cleaning structure
+
+Why it matters
+    Refactoring shows:
+        Long-term thinking
+        Maintainability mindset
+        Senior-level engineering maturity
+
+How your app detects it
+A commit is counted as refactor only if:
+    Commit message contains “refactor”
+    AND meaningful code change (> 20 lines)
+
+📌 Output in UI
+Refactor Commits
+
+3️⃣ Repository Filtering (Signal Cleaning)
+What it does
+Removes repos that don’t represent engineering effort, such as:
+    Forks
+    Empty repos
+    Config-only repos
+    Low-activity repos
+
+Why it matters
+Without filtering:
+    Noise pollutes analysis
+    Results become misleading
+
+Your app ensures:
+    only real engineering work is analyzed
+
+📌 Internal impact
+    Makes commit score fair
+    Prevents score inflation
+
+4️⃣ Static Code Analysis (Code-Level Intelligence)
+What it measures
+    Function complexity
+    Function size
+    Nesting depth
+    “God functions”
+
+Why it matters
+    This answers:
+        “What kind of code does this developer write?”
+
+Not just how often, but how well.
+
+How your app does it
+    Downloads repos locally
+    Parses JavaScript files using Babel AST
+    Traverses function nodes
+    Extracts metrics per function
+
+📌 Output in UI
+Functions Analyzed
+(Complexity metrics ready for EMS)
+
+5️⃣ Cross-Repository Aggregation (Big Picture)
+What it does
+Instead of analyzing one repo:
+    Combines data across all relevant repos
+    Produces a developer-level profile
+
+Why it matters
+A single repo can lie.
+Patterns across repos don’t.
+
+Your app detects:
+    Consistency
+    Engineering habits
+    Long-term behavior
+
+6️⃣ Security-First OAuth Design
+What it does
+    Uses GitHub OAuth
+    Stores GitHub token inside JWT
+    Never exposes GitHub token to frontend
+
+Why it matters
+Shows:
+    Real-world backend security understanding
+    Production-ready auth flow
+
+7️⃣ Engineering Maturity Signals (Hidden Strength)
+
+Your app indirectly measures:
+
+Signal	             how
+Maintainability	   Refactors + complexity
+Discipline	       Commit size patterns
+Experience         Refactor frequency
+Ownership	       Commit history depth
+Code health	       AST metrics
+
+This is exactly what hiring managers care about.
