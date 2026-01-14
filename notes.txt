@@ -219,3 +219,41 @@ GitHub Repo
  → EMS
  Dependencies : npm install unzipper
     
+When you call: downloadRepo("rehanshu", "AIvora", accessToken)
+
+It:
+    Downloads repo as ZIP
+    Saves it locally
+    Extracts all files
+    Returns folder path like: /backend/temp/AIvora/
+
+
+NOW Reading .js files from the downloaded repo
+Add this helper inside
+📍 services/codeAnalysis.service.js
+
+Connecting DOWNLOAD → ANALYSIS (CRITICAL)
+Inside
+📍 controllers/analyze.controller.js
+
+## FULL PIPELINE
+GitHub API
+   ↓
+Repo ZIP Download
+   ↓
+Extract Files
+   ↓
+Read .js Files
+   ↓
+AST Parsing
+   ↓
+Complexity + Risk
+   ↓
+EMS Score
+
+✔ GitHub OAuth
+✔ Commit intelligence
+✔ Repo downloading
+✔ Static code analysis
+✔ Risk detection
+✔ EMS calculation

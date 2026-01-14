@@ -12,7 +12,8 @@ import {fetchRepos} from "../services/github.service.js"
 import { filterRepos } from "../repoFilter.js";
 import { fetchCommits } from "../services/commit.service.js";
 import { calculateCommitScore } from "../services/commitScore.js";
-
+import { downloadRepo } from "../services/repoDownload.service.js";
+import { analyzeFile, getAllJSFiles } from "../services/codeAnalysis.service.js";
 
 export async function analyzeUser(req,res){
     try{
@@ -43,6 +44,20 @@ export async function analyzeUser(req,res){
             commitScore,
             commitsAnalyzed: commits.length
         });
+        // 1️ Download repo
+        const repoPath = await downloadRepo(
+        username,
+        repo.name,
+        accessToken
+        );
+        // 2️ Collect JS files
+        const jsFiles = getAllJSFiles(repoPath);
+
+        // 3️ Analyze each file
+        for (const file of jsFiles) {
+            const metrics = analyzeFile(file);
+            allComplexityMetrics.push(...metrics);
+        }
        }
        res.json(results);
     }

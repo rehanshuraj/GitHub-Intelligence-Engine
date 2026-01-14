@@ -35,3 +35,22 @@ export function analyzeFile(filePath) {
     });
     return metrics;
 }
+
+/**
+ * Recursively collect all .js files
+ */
+
+export function getAllJSFiles(dir,files=[]){
+    const entries = fs.readdirSync(dir);
+
+    for(const entry of entries){
+        const fullPath = path.join(dir,entry);
+
+        if(fs.statSync(fullPath).isDirectory()){
+            getAllJSFiles(fullPath,files);
+        }else if (fullPath.endsWith(".js")){
+            files.push(fullPath);
+        }
+    }
+    return files;
+}
