@@ -51,17 +51,24 @@ export function calculateEMS({
  * Penalizes complexity & god functions
  */
 
-function scoreCodeQuality(metrics){
-    if(!metrics.length()) return 0;
-    let score = 25; //start with full marks
-    metrics.forEach(fn =>{
-        if (fn.cyclomaticComplexity > 10)  score -=2 ;
-        if (fn.maxNestingDepth > 4) score -=2;
-        if (fn.isGodFunction) score -=3;
-    })
+function scoreCodeQuality(metrics) {
+  if (!metrics.length) return 0;
 
-    return Math.max(0,score);
+  let penalty = 0;
+
+  metrics.forEach(fn => {
+    if (fn.cyclomaticComplexity > 10) penalty += 1;
+    if (fn.maxNestingDepth > 4) penalty += 1;
+    if (fn.isGodFunction) penalty += 2;
+  });
+
+  // Normalize penalty
+  const normalizedPenalty = penalty / metrics.length;
+
+  const score = 25 - normalizedPenalty * 25;
+  return Math.max(0, Math.round(score));
 }
+
 
 /**
  * 3️ Refactor Discipline (0–20)
@@ -105,13 +112,18 @@ function scoreConsistency(commitHistory){
  * Penalizes dangerous coding habits
  */
 
-function scoreRisk(risks){
-    if(!risks.length) return 10;
-    if(risks.length <= 2) return 6;
-    if(risks.length <= 5) return 3;
+function scoreRisk(risks) {
+  let penalty = 0;
 
-    return 0;
+  risks.forEach(risk => {
+    if (risk.includes("secret")) penalty += 4;
+    else if (risk.includes("Empty catch")) penalty += 3;
+    else penalty += 1;
+  });
+
+  return Math.max(0, 10 - penalty);
 }
+
 
 /**
  * 6️ Test Signals (0–10)

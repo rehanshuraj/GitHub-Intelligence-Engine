@@ -257,3 +257,26 @@ EMS Score
 ✔ Static code analysis
 ✔ Risk detection
 ✔ EMS calculation
+
+
+PROBLEMS
+❌ Problem 1: EMS always too high (90–100)
+    Why it happens
+      Few functions analyzed
+      No risks detected
+      Small repos
+    Reality
+     Small codebase ≠ good engineering
+
+❌ Problem 2: EMS always too low (20–30)
+Why it happens
+    Many utility functions counted equally
+    One bad file ruins entire score
+    Complexity penalties too aggressive
+    
+❌ Problem 3: Same score for very different developers
+Why it happens
+    No normalization
+    Repo size ignored
+    Time window ignored
+
