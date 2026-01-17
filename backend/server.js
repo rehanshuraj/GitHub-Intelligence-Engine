@@ -9,9 +9,10 @@ dotenv.config();
 
 const app = express();
 
+// ✅ CORS FIX (production + local safe)
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.FRONTEND_URL,
     credentials: true
   })
 );
@@ -22,12 +23,18 @@ app.use(express.json());
 app.use("/auth", authRoutes);
 
 // Analysis route
-app.get("/analyze/:username", (req, res, next) => {
-  console.log("Analyze route hit for:", req.params.username);
-  next();
-}, analyzeUser);
+app.get(
+  "/analyze/:username",
+  (req, res, next) => {
+    console.log("Analyze route hit for:", req.params.username);
+    next();
+  },
+  analyzeUser
+);
 
-const PORT = 4000;
+// ✅ PORT FIX (Render-compatible)
+const PORT = process.env.PORT || 4000;
+
 app.listen(PORT, () => {
-  console.log(`hello rajveer your server is running on port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
