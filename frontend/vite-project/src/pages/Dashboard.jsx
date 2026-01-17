@@ -9,24 +9,6 @@ export default function Dashboard() {
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // ✅ FIXED: Extract token correctly for HashRouter
-  useEffect(() => {
-    const hash = window.location.hash; 
-    // Example: "#/dashboard?token=XYZ"
-
-    const queryString = hash.split("?")[1];
-    if (!queryString) return;
-
-    const params = new URLSearchParams(queryString);
-    const token = params.get("token");
-
-    if (token) {
-      localStorage.setItem("token", token);
-
-      // Remove token from URL
-      window.history.replaceState({}, "", "#/dashboard");
-    }
-  }, []);
 
   const handleAnalyze = async () => {
     setLoading(true);
