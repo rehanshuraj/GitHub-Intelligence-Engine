@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { analyzeUser } from "../api/githubApi";
 import EMSMeter from "../components/EMSMeter";
-import StatCard from "../components/statCard";
+import StatCard from "../components/StatCard";
 import Loader from "../components/Loader";
 
 export default function Dashboard() {
