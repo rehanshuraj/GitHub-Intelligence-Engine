@@ -1,8 +1,10 @@
+const API_BASE = import.meta.env.VITE_API_URL;
+
 export async function analyzeUser(username) {
   const token = localStorage.getItem("token");
 
   const res = await fetch(
-    `http://localhost:4000/analyze/${username}`,
+    `${API_BASE}/analyze/${username}`,
     {
       headers: {
         Authorization: `Bearer ${token}`
