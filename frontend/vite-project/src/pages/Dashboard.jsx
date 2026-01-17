@@ -9,14 +9,22 @@ export default function Dashboard() {
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Extract token from URL after OAuth redirect
+  // ✅ FIXED: Extract token correctly for HashRouter
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
+    const hash = window.location.hash; 
+    // Example: "#/dashboard?token=XYZ"
+
+    const queryString = hash.split("?")[1];
+    if (!queryString) return;
+
+    const params = new URLSearchParams(queryString);
     const token = params.get("token");
 
     if (token) {
       localStorage.setItem("token", token);
-      window.history.replaceState({}, "", "/dashboard");
+
+      // Remove token from URL
+      window.history.replaceState({}, "", "#/dashboard");
     }
   }, []);
 
