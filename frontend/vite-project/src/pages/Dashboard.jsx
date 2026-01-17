@@ -9,6 +9,16 @@ export default function Dashboard() {
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // Extract token from URL after OAuth redirect
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+
+    if (token) {
+      localStorage.setItem("token", token);
+      window.history.replaceState({}, "", "/dashboard");
+    }
+  }, []);
 
   const handleAnalyze = async () => {
     setLoading(true);

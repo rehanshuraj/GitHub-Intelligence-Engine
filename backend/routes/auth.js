@@ -55,7 +55,7 @@ router.get("/github/callback",async(req,res)=>{
     );
 
     // Redirect to frontend with JWT
-    res.redirect(`${process.env.FRONTEND_URL}/#/dashboard?token=${jwtToken}`);
+    res.redirect(`${process.env.FRONTEND_URL}/dashboard?token=${jwtToken}`);
 
 })
 
