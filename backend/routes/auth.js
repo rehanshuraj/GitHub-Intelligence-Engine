@@ -1,24 +1,62 @@
-router.get("/github/callback", async (req, res) => {
-  const { code } = req.query;
+/**
+ * Handles GitHub OAuth login
+ * Flow:
+ * 1. Redirect user to GitHub authorization page
+ * 2. Receive OAuth code from GitHub
+ * 3. Exchange code for access token
+ * 4. Store token inside a signed JWT
+ */
 
-  const tokenResponse = await axios.post(
-    "https://github.com/login/oauth/access_token",
-    {
-      client_id: process.env.GITHUB_CLIENT_ID,
-      client_secret: process.env.GITHUB_CLIENT_SECRET,
-      code
-    },
-    { headers: { Accept: "application/json" } }
-  );
+import express  from 'express';
+import axios from 'axios';
+import jwt from 'jsonwebtoken';
 
-  const accessToken = tokenResponse.data.access_token;
+const router = express.Router();
 
-  const jwtToken = jwt.sign(
-    { accessToken },
-    process.env.JWT_SECRET,
-    { expiresIn: "1d" }
-  );
-
-  // ✅ Production-safe redirect
-  res.redirect(`${process.env.FRONTEND_URL}/dashboard?token=${jwtToken}`);
+/**
+ * Step 1:
+ * Redirect user to GitHub OAuth consent screen
+ */
+router.get("/github",(req,res)=>{
+    const redirecturi =  `https://github.com/login/oauth/authorize` +
+    `?client_id=${process.env.GITHUB_CLIENT_ID}` +
+    `&scope=repo`;
+    res.redirect(redirecturi);
 });
+
+/**
+ * Step 2:
+ * GitHub redirects back with `code`
+ * We exchange code → access token
+ */
+
+router.get("/github/callback",async(req,res)=>{
+    const {code}=req.query;
+    const tokenResponse = await axios.post(
+        "https://github.com/login/oauth/access_token",
+        {
+            client_id: process.env.GITHUB_CLIENT_ID,
+            client_secret: process.env.GITHUB_CLIENT_SECRET,
+            code
+        },
+        {headers:{Accept:"application/json"}}
+    );
+    // GitHub personal access token , Ask GitHub for permission on behalf of the user and get an access token
+    const accessToken = tokenResponse.data.access_token;
+
+     /**
+     * Store access token inside JWT
+     * This avoids exposing GitHub token to frontend
+     */
+    const jwtToken = jwt.sign(
+        {accessToken},
+        process.env.JWT_SECRET,
+        {expiresIn: 60*60*24}
+    );
+
+    // Redirect to frontend with JWT
+    res.redirect(`${process.env.FRONTEND_URL}/dashboard?token=${jwtToken}`);
+
+})
+
+export default router;
