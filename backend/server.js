@@ -9,16 +9,10 @@ dotenv.config();
 
 const app = express();
 
-/**
- * ✅ CORS FIX (CRITICAL)
- * - Allow Authorization header
- * - Allow frontend origin
- */
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
-    credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization"]
+    origin: "http://localhost:5173",
+    credentials: true
   })
 );
 
@@ -27,17 +21,10 @@ app.use(express.json());
 // OAuth routes
 app.use("/auth", authRoutes);
 
-// Analyze route
-app.get(
-  "/analyze/:username",
-  (req, res, next) => {
-    console.log("Analyze route hit for:", req.params.username);
-    next();
-  },
-  analyzeUser
-);
+// Analysis route
+app.get("/analyze/:username", analyzeUser);
 
-const PORT = process.env.PORT || 4000;
+const PORT = 4000;
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`hello rajveer your server is running on port ${PORT}`);
 });

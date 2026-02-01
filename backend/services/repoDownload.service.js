@@ -1,37 +1,33 @@
-import axios from "axios";
 import fs from "fs";
 import path from "path";
+import axios from "axios";
 import unzipper from "unzipper";
 
-export async function downloadRepo(
-  username,
-  repo,
-  accessToken
-) {
-  const url = `https://api.github.com/repos/${username}/${repo}/zipball`;
+export async function downloadRepo(username, repo, token) {
+  const zipUrl = `https://api.github.com/repos/${username}/${repo}/zipball`;
+  const tmpDir = path.join(process.cwd(), "tmp");
+  const repoDir = path.join(tmpDir, repo);
 
-  const outputDir = path.resolve("tmp", repo);
+  if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir);
+  if (fs.existsSync(repoDir)) return repoDir;
 
-  // If already downloaded, reuse
-  if (fs.existsSync(outputDir)) {
-    return outputDir;
-  }
-
-  fs.mkdirSync(outputDir, { recursive: true });
-
-  // Download zip as stream
-  const response = await axios.get(url, {
+  const response = await axios({
+    url: zipUrl,
+    method: "GET",
     responseType: "stream",
     headers: {
-      Authorization: `Bearer ${accessToken}`
+      Authorization: `Bearer ${token}`,
+      Accept: "application/vnd.github+json"
     }
   });
 
-  // ✅ Correct stream → Promise handling
-  return new Promise((resolve, reject) => {
+  // 🔥 THIS IS THE FIX
+  await new Promise((resolve, reject) => {
     response.data
-      .pipe(unzipper.Extract({ path: outputDir }))
-      .on("close", () => resolve(outputDir))
-      .on("error", err => reject(err));
+      .pipe(unzipper.Extract({ path: repoDir }))
+      .on("close", resolve)
+      .on("error", reject);
   });
+
+  return repoDir;
 }

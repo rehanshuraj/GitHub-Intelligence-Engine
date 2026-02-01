@@ -3,24 +3,22 @@ import { analyzeUser } from "../api/githubApi";
 import EMSMeter from "../components/EMSMeter";
 import StatCard from "../components/StatCard";
 import Loader from "../components/Loader";
-import { useAuth } from "../context/AuthContext";
 
 export default function Dashboard() {
-  const { setToken } = useAuth();
   const [data, setData] = useState(null);
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // Extract token from URL after OAuth redirect
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const token = params.get("token");
 
     if (token) {
       localStorage.setItem("token", token);
-      setToken(token); // 🔥 THIS WAS MISSING
       window.history.replaceState({}, "", "/dashboard");
     }
-  }, [setToken]);
+  }, []);
 
   const handleAnalyze = async () => {
     setLoading(true);
@@ -51,6 +49,7 @@ export default function Dashboard() {
       {data && (
         <>
           <EMSMeter score={data.commitScore} />
+
           <div className="grid">
             <StatCard title="Repos Analyzed" value={data.reposAnalyzed} />
             <StatCard title="Total Commits" value={data.totalCommits} />

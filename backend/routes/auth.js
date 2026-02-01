@@ -7,9 +7,9 @@
  * 4. Store token inside a signed JWT
  */
 
-import express  from 'express';
-import axios from 'axios';
-import jwt from 'jsonwebtoken';
+import express from "express";
+import axios from "axios";
+import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
@@ -17,11 +17,9 @@ const router = express.Router();
  * Step 1:
  * Redirect user to GitHub OAuth consent screen
  */
-router.get("/github",(req,res)=>{
-    const redirecturi =  `https://github.com/login/oauth/authorize` +
-    `?client_id=${process.env.GITHUB_CLIENT_ID}` +
-    `&scope=repo`;
-    res.redirect(redirecturi);
+router.get("/github", (req, res) => {
+  const redirectURL = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&scope=repo`;
+  res.redirect(redirectURL);
 });
 
 /**
@@ -29,34 +27,35 @@ router.get("/github",(req,res)=>{
  * GitHub redirects back with `code`
  * We exchange code → access token
  */
+router.get("/github/callback", async (req, res) => {
+  const { code } = req.query;
 
-router.get("/github/callback",async(req,res)=>{
-    const {code}=req.query;
-    const tokenResponse = await axios.post(
-        "https://github.com/login/oauth/access_token",
-        {
-            client_id: process.env.GITHUB_CLIENT_ID,
-            client_secret: process.env.GITHUB_CLIENT_SECRET,
-            code
-        },
-        {headers:{Accept:"application/json"}}
-    );
-    // GitHub personal access token , Ask GitHub for permission on behalf of the user and get an access token
-    const accessToken = tokenResponse.data.access_token;
+  const tokenResponse = await axios.post(
+    "https://github.com/login/oauth/access_token",
+    {
+      client_id: process.env.GITHUB_CLIENT_ID,
+      client_secret: process.env.GITHUB_CLIENT_SECRET,
+      code
+    },
+    { headers: { Accept: "application/json" } }
+  );
 
-     /**
-     * Store access token inside JWT
-     * This avoids exposing GitHub token to frontend
-     */
-    const jwtToken = jwt.sign(
-        {accessToken},
-        process.env.JWT_SECRET,
-        {expiresIn: 60*60*24}
-    );
+  // GitHub personal access token
+  const accessToken = tokenResponse.data.access_token;
 
-    // Redirect to frontend with JWT
-    res.redirect(`${process.env.FRONTEND_URL}/dashboard?token=${jwtToken}`);
+  /**
+   * Store access token inside JWT
+   * This avoids exposing GitHub token to frontend
+   */
+  const jwtToken = jwt.sign(
+    { accessToken },
+    process.env.JWT_SECRET,
+    { expiresIn: "1d" }
+  );
 
-})
+  // Redirect to frontend with JWT
+  res.redirect(`http://localhost:5173/dashboard?token=${jwtToken}`);
+
+});
 
 export default router;
