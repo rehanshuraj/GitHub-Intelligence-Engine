@@ -5,7 +5,7 @@ export async function analyzeUser(username) {
     `http://localhost:4000/analyze/${username}`,
     {
       headers: {
-        Authorization: token
+        Authorization: `Bearer ${token}`
       }
     }
   );

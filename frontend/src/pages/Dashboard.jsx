@@ -21,14 +21,17 @@ export default function Dashboard() {
   }, []);
 
   const handleAnalyze = async () => {
+    if (!username) return alert("Enter GitHub username");
+
     setLoading(true);
     try {
       const res = await analyzeUser(username);
       setData(res);
     } catch (err) {
       alert(err.message);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -48,7 +51,7 @@ export default function Dashboard() {
 
       {data && (
         <>
-          <EMSMeter score={data.commitScore} />
+          <EMSMeter score={data.EMS} />
 
           <div className="grid">
             <StatCard title="Repos Analyzed" value={data.reposAnalyzed} />

@@ -20,8 +20,7 @@ export async function downloadRepo(username, repo, token) {
       Accept: "application/vnd.github+json"
     }
   });
-
-  // 🔥 THIS IS THE FIX
+  
   await new Promise((resolve, reject) => {
     response.data
       .pipe(unzipper.Extract({ path: repoDir }))

@@ -1,5 +1,5 @@
 import fs from "fs";
-import path from "path";  
+import path from "path";
 import parser from "@babel/parser";
 import traverse from "@babel/traverse";
 
@@ -15,10 +15,9 @@ export function analyzeFile(filePath) {
 
     const metrics = [];
 
-    traverseAST(ast, {
+    traverse(ast, {
       Function(path) {
         const body = path.node.body;
-
         if (!body || !body.body) return;
 
         const complexity = body.body.length;
@@ -32,7 +31,6 @@ export function analyzeFile(filePath) {
     });
 
     return metrics;
-
   } catch (err) {
     console.warn("Skipping file (parse error):", filePath);
     return [];
@@ -51,10 +49,7 @@ export function getAllJSFiles(dir, files = []) {
 
     if (fs.statSync(fullPath).isDirectory()) {
       getAllJSFiles(fullPath, files);
-    } else if (
-      file.endsWith(".js") ||
-      file.endsWith(".jsx")
-    ) {
+    } else if (file.endsWith(".js") || file.endsWith(".jsx")) {
       files.push(fullPath);
     }
   }
