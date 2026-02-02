@@ -54,7 +54,7 @@ router.get("/github/callback", async (req, res) => {
   );
 
   // Redirect to frontend with JWT
-  res.redirect(`http://localhost:5173/dashboard?token=${jwtToken}`);
+  res.redirect(`https://git-hub-intelligence-engine-hbrn.vercel.app/dashboard?token=${jwtToken}`);
 
 });
 
