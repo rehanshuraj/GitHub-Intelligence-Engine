@@ -11,7 +11,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.FRONTEND_URL,
     credentials: true
   })
 );
@@ -23,7 +23,9 @@ app.use("/auth", authRoutes);
 
 // Analysis route
 app.get("/analyze/:username", analyzeUser);
-
+app.get("/", (req, res) => {
+  res.send("Hello rajveer! The server is up and running.");
+});
 const PORT = 4000;
 app.listen(PORT, () => {
   console.log(`hello rajveer your server is running on port ${PORT}`);
