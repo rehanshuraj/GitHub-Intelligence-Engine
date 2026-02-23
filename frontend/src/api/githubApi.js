@@ -2,7 +2,7 @@ export async function analyzeUser(username) {
   const token = localStorage.getItem("token");
 
   const res = await fetch(
-    `https://github-intelligence-engine.onrender.com/analyze/${username}`,
+    `http://localhost:4000/analyze/${username}`,
     {
       headers: {
         Authorization: `Bearer ${token}`

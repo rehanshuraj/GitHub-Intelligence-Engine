@@ -14,7 +14,7 @@ export function AuthProvider({ children }) {
       setToken(urlToken);
 
       // clean URL
-      window.history.replaceState({}, "", "/dashboard");
+      window.history.replaceState({},  document.title, window.location.pathname);
       return;
     }
 
