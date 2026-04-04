@@ -6,6 +6,7 @@ import { calculateCommitScore } from "../services/commitScore.js";
 import { downloadRepo } from "../services/repoDownload.service.js";
 import { analyzeFile, getAllJSFiles } from "../services/codeAnalysis.service.js";
 import { calculateEMS } from "../services/emsScore.service.js";
+import { calculateRLScore, getRLLevel } from "../utils/rlDetector.js";
 
 export async function analyzeUser(req, res) {
   try {
@@ -21,6 +22,13 @@ export async function analyzeUser(req, res) {
 
     const repos = await fetchRepos(username, accessToken);
     const filteredRepos = filterRepos(repos);
+    const rlResult = calculateRLScore(repos);
+
+    const reinforcementLearning = {
+      detected: rlResult.detected,
+      score: rlResult.score,
+      level: getRLLevel(rlResult.score)
+    };
 
     let allCommits = [];
     let allComplexityMetrics = [];
@@ -69,7 +77,8 @@ export async function analyzeUser(req, res) {
       refactorCommits: refactorCount,
       commitScore,
       EMS: emsScore,
-      functionsAnalyzed: allComplexityMetrics.length
+      functionsAnalyzed: allComplexityMetrics.length,
+      reinforcementLearning
     });
   } catch (err) {
     console.error(err);
